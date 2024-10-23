@@ -118,10 +118,10 @@ git push origin my-new-branch
 Once your pull request is merged, feel free to add your name to the `contributorsList.md` file in the following format:
 
 ```markdown
-#### Name: [Your Name](https://github.com/your-username)
-- Place: City, State, Country
-- Bio: A brief description of who you are.
-- GitHub: [GitHub account name](https://github.com/your-username)
+#### Name: [Smit Gandhi](https://github.com/smitngandhi)
+- Place: City:- Ahmedabad, State:- Gujarat, Country:- India
+- Bio: I'm Smit Gandhi, a 19-year-old passionate about machine learning and enthusiastic about reading books.
+- GitHub: [smitngandhi](https://github.com/smitngandhi)
 ```
 
 ---
