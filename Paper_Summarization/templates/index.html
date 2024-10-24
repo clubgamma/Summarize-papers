@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>Research Paper Summarizer</h1>
+    <div class="upload-container">
+        <form id="uploadForm" enctype="multipart/form-data">
+            <div class="file-input-container">
+                <input type="file" id="file" name="file" accept=".pdf" required>
+                <label for="file" class="file-label">
+                    <span>Choose PDF File</span>
+                </label>
+                <span id="file-name">No file chosen</span>
+            </div>
+            <div class="requirements">
+                <p>📋 Requirements:</p>
+                <ul>
+                    <li>📁 PDF format only</li>
+                    <li>📄 Maximum 50 pages</li>
+                    <li>🔍 File must be readable (not scanned/image-based)</li>
+                </ul>
+            </div>
+            <button type="submit">
+                Generate Summary
+            </button>
+        </form>
+    </div>
+    
+    <div id="error-container"></div>
+
+    <div class="status-container" id="status-container" style="display: none;">
+        <div class="loader"></div>
+        <p>Processing your research paper... Please wait</p>
+    </div>
+
+    <div class="summary-container" id="summary-container" style="display: none;">
+        <div class="summary-header">
+            <h2>📑 Summary Report</h2>
+            <div class="stats">
+                <span id="page-count">📄 Pages: 0</span>
+                <span id="char-count">📝 Characters: 0</span>
+            </div>
+        </div>
+        <div id="summary" class="summary-content"></div>
+    </div>
+</div>
+
+<script>
+document.getElementById('file').addEventListener('change', function(e) {
+    const fileName = e.target.files[0]?.name || 'No file chosen';
+    const fileNameElement = document.getElementById('file-name');
+    fileNameElement.textContent = fileName;
+    fileNameElement.style.animation = 'fadeIn 0.3s ease-out';
+});
+
+function showError(message) {
+    const errorContainer = document.getElementById('error-container');
+    errorContainer.innerHTML = `
+        <div class="error-message">
+            ⚠️ ${message}
+        </div>
+    `;
+    errorContainer.style.animation = 'fadeIn 0.3s ease-out';
+    setTimeout(() => {
+        errorContainer.style.animation = 'fadeIn 0.3s ease-out reverse';
+        setTimeout(() => {
+            errorContainer.innerHTML = '';
+        }, 300);
+    }, 5000);
+}
+
+document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(e.target);
+    const statusContainer = document.getElementById('status-container');
+    const summaryContainer = document.getElementById('summary-container');
+    const summaryDiv = document.getElementById('summary');
+    
+    // Show loading state
+    statusContainer.style.display = 'block';
+    summaryContainer.style.display = 'none';
+    
+    try {
+        const response = await fetch('/upload', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const data = await response.json();
+        
+        // Hide loading state
+        statusContainer.style.display = 'none';
+        
+        if (data.error) {
+            showError(data.error);
+            return;
+        }
+        
+        // Show summary with animation
+        summaryContainer.style.display = 'block';
+        summaryContainer.style.animation = 'fadeIn 0.6s ease-out';
+        
+        document.getElementById('page-count').textContent = `📄 Pages: ${data.pages}`;
+        document.getElementById('char-count').textContent = `📝 Characters: ${data.characters}`;
+        
+        // Animate summary content
+        summaryDiv.style.opacity = '0';
+        summaryDiv.innerHTML = data.summary.replace(/\n/g, '<br>');
+        setTimeout(() => {
+            summaryDiv.style.transition = 'opacity 0.6s ease-out';
+            summaryDiv.style.opacity = '1';
+        }, 100);
+        
+        // Scroll to summary
+        summaryContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
+    } catch (error) {
+        statusContainer.style.display = 'none';
+        showError('An unexpected error occurred. Please try again.');
+    }
+});
+</script>
+{% endblock %}
