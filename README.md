@@ -22,11 +22,16 @@ The project aims to facilitate faster comprehension of academic research by prov
 
 ```bash
 .
+
 ├── data/                 # Datasets for academic papers
-├── notebooks/            # Jupyter notebooks for data analysis and experimentation
+├── notebooks/ 
+│   ├── summarization of a long text.ipynb #jupyter notebook for a long text which can be summarized by all pretrained models
+│   ├── summarize-papers.ipynb  # a single notebook for summarization of academic papers 
+│   ├── summarization.ipynb     # notebook with main function stored inside src/summarization_utils.py
 ├── src/                  # Source code for the project
-│   ├── text_processing.py
-│   ├── summarization.py
+│   ├── summarization_utils.py # Python file which contains all the function
+│   ├── data_prosessing.py           
+│   ├── model_training.py
 ├── README.md             # Project documentation
 └── CONTRIBUTING.md       # Contribution guidelines
 ```
